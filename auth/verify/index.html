@@ -14,6 +14,9 @@
         --line: #1a2128;
         --ghost: #3d4a56;
         --pulse: #5a7a6e;
+        --flicker: #8fa89c;
+        --warn: #6a5a4a;
+        --sealed: #2a3238;
       }
 
       * {
@@ -35,49 +38,432 @@
       body {
         display: grid;
         place-items: center;
-        padding: 2rem;
+        padding: 1.5rem;
+        background-image:
+          radial-gradient(ellipse 70% 45% at 50% 110%, rgba(90, 122, 110, 0.1), transparent),
+          repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 2px,
+            rgba(255, 255, 255, 0.012) 2px,
+            rgba(255, 255, 255, 0.012) 3px
+          );
       }
 
       .frame {
-        width: min(380px, 100%);
+        width: min(440px, 100%);
         border: 1px solid var(--line);
         background: var(--panel);
-        padding: 2rem 1.75rem;
-        text-align: center;
+        padding: 2rem 1.75rem 1.5rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* scan line */
+      .frame::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(143, 168, 156, 0.35),
+          transparent
+        );
+        pointer-events: none;
+        animation: scan 6s linear infinite;
+        opacity: 0.5;
+      }
+
+      @keyframes scan {
+        0% {
+          top: -1px;
+        }
+        100% {
+          top: 100%;
+        }
+      }
+
+      .frame::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          105deg,
+          transparent 40%,
+          rgba(143, 168, 156, 0.04) 50%,
+          transparent 60%
+        );
+        pointer-events: none;
+        animation: sweep 14s ease-in-out infinite;
+      }
+
+      @keyframes sweep {
+        0%,
+        100% {
+          transform: translateX(-100%);
+        }
+        50% {
+          transform: translateX(100%);
+        }
+      }
+
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 1.75rem;
+        position: relative;
+        z-index: 1;
       }
 
       .sigil {
         font-size: 10px;
         color: var(--pulse);
-        opacity: 0.55;
-        margin-bottom: 1.25rem;
+        opacity: 0.75;
+        user-select: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
       }
 
-      p {
-        margin: 0;
-        line-height: 1.7;
+      .tick {
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--pulse);
+        flex-shrink: 0;
+        animation: blink 3s step-end infinite;
+      }
+
+      @keyframes blink {
+        0%,
+        88% {
+          opacity: 0.15;
+          box-shadow: none;
+        }
+        89%,
+        100% {
+          opacity: 1;
+          box-shadow: 0 0 6px rgba(90, 122, 110, 0.6);
+        }
+      }
+
+      .phase {
+        font-size: 9px;
+        color: var(--flicker);
+        opacity: 0.35;
+        text-transform: lowercase;
+      }
+
+      /* handshake steps */
+      .steps {
+        position: relative;
+        z-index: 1;
+        margin-bottom: 1.5rem;
+      }
+
+      .step {
+        display: grid;
+        grid-template-columns: 1.25rem 1fr;
+        gap: 0.75rem;
+        padding: 0.55rem 0;
+        border-bottom: 1px solid var(--line);
+        align-items: start;
+      }
+
+      .step:last-child {
+        border-bottom: none;
+      }
+
+      .step-mark {
+        font-size: 9px;
+        color: var(--pulse);
         opacity: 0.5;
-        font-size: 11px;
+        padding-top: 0.15rem;
+        user-select: none;
       }
 
-      .hash {
-        margin-top: 1.5rem;
-        padding-top: 1rem;
-        border-top: 1px solid var(--line);
+      .step.done .step-mark {
+        opacity: 0.9;
+      }
+
+      .step.stalled .step-mark {
+        color: var(--warn);
+        opacity: 0.7;
+        animation: stall-pulse 2.5s ease-in-out infinite;
+      }
+
+      @keyframes stall-pulse {
+        0%,
+        100% {
+          opacity: 0.45;
+        }
+        50% {
+          opacity: 0.85;
+        }
+      }
+
+      .step-body {
+        line-height: 1.55;
+      }
+
+      .step-label {
+        font-size: 11px;
+        color: var(--flicker);
+        opacity: 0.55;
+        margin-bottom: 0.15rem;
+      }
+
+      .step.done .step-label {
+        opacity: 0.35;
+      }
+
+      .step.stalled .step-label {
+        opacity: 0.75;
+        color: var(--flicker);
+      }
+
+      .step-detail {
         font-size: 10px;
-        opacity: 0.3;
+        opacity: 0.4;
         word-break: break-all;
+      }
+
+      .step.done .step-detail {
+        opacity: 0.25;
+      }
+
+      .step.stalled .step-detail {
+        opacity: 0.55;
+      }
+
+      /* token block */
+      .token-block {
+        margin: 0.5rem 0 1.25rem;
+        padding: 0.75rem 0.85rem;
+        border: 1px dashed var(--line);
+        background: rgba(7, 8, 9, 0.5);
+        position: relative;
+        z-index: 1;
+      }
+
+      .token-block.empty {
+        opacity: 0.45;
+      }
+
+      .token-label {
+        font-size: 9px;
+        color: var(--pulse);
+        opacity: 0.5;
+        margin-bottom: 0.4rem;
+        letter-spacing: 0.08em;
+      }
+
+      .token-value {
+        font-size: 11px;
+        color: var(--flicker);
+        opacity: 0.65;
+        word-break: break-all;
+        line-height: 1.6;
+      }
+
+      .token-value.missing {
+        opacity: 0.3;
+        font-style: normal;
+      }
+
+      /* relay buttons */
+      .relay-section {
+        position: relative;
+        z-index: 1;
+        margin-top: 1.5rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid var(--line);
+      }
+
+      .relay-heading {
+        font-size: 9px;
+        opacity: 0.3;
+        margin-bottom: 0.75rem;
+        letter-spacing: 0.06em;
+      }
+
+      .relay-grid {
+        display: grid;
+        gap: 0.5rem;
+      }
+
+      .relay-btn {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 0.65rem 0.85rem;
+        border: 1px solid var(--sealed);
+        background: rgba(42, 50, 56, 0.25);
+        color: var(--ghost);
+        font-family: inherit;
+        font-size: 10px;
+        font-weight: 300;
+        letter-spacing: 0.04em;
+        cursor: not-allowed;
+        opacity: 0.45;
+        text-align: left;
+        transition: none;
+      }
+
+      .relay-btn:focus-visible {
+        outline: 1px solid var(--pulse);
+        outline-offset: 2px;
+      }
+
+      .relay-btn .platform {
+        color: var(--flicker);
+        opacity: 0.5;
+      }
+
+      .relay-btn .status {
+        font-size: 9px;
+        color: var(--warn);
+        opacity: 0.6;
+      }
+
+      .footer-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-top: 1.25rem;
+        padding-top: 0.75rem;
+        font-size: 9px;
+        opacity: 0.28;
+        position: relative;
+        z-index: 1;
+      }
+
+      .cipher {
+        color: var(--flicker);
+        opacity: 0.2;
+        font-size: 10px;
+        margin-top: 0.75rem;
+        text-align: right;
+        position: relative;
+        z-index: 1;
+        user-select: none;
+      }
+
+      @media (max-width: 380px) {
+        .frame {
+          padding: 1.5rem 1.25rem 1.25rem;
+        }
+
+        .header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.35rem;
+        }
       }
     </style>
   </head>
   <body>
     <div class="frame">
-      <div class="sigil">handshake · pending</div>
-      <p>
-        token route unresolved<br />
-        client required
-      </p>
-      <div class="hash">0x00 · null carrier</div>
+      <div class="header">
+        <div class="sigil"><span class="tick" aria-hidden="true"></span>handshake / incomplete</div>
+        <span class="phase">phase · 02/03</span>
+      </div>
+
+      <div class="steps" aria-label="handshake sequence">
+        <div class="step done">
+          <span class="step-mark" aria-hidden="true">01</span>
+          <div class="step-body">
+            <div class="step-label">ingress detected</div>
+            <div class="step-detail">browser carrier · no native intercept</div>
+          </div>
+        </div>
+        <div class="step done">
+          <span class="step-mark" aria-hidden="true">02</span>
+          <div class="step-body">
+            <div class="step-label">token fragment received</div>
+            <div class="step-detail" id="token-detail">awaiting parse · · ·</div>
+          </div>
+        </div>
+        <div class="step stalled">
+          <span class="step-mark" aria-hidden="true">03</span>
+          <div class="step-body">
+            <div class="step-label">client binding unresolved</div>
+            <div class="step-detail">local node required · relay dormant</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="token-block" id="token-block">
+        <div class="token-label">sig · fragment</div>
+        <div class="token-value" id="token-display">— · null payload</div>
+      </div>
+
+      <div class="relay-section">
+        <div class="relay-heading">outbound relay · all channels sealed</div>
+        <div class="relay-grid">
+          <button type="button" class="relay-btn" disabled aria-disabled="true">
+            <span class="platform">relay · iOS</span>
+            <span class="status">sealed</span>
+          </button>
+          <button type="button" class="relay-btn" disabled aria-disabled="true">
+            <span class="platform">relay · android</span>
+            <span class="status">sealed</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="footer-row">
+        <span>route · /auth/verify</span>
+        <span id="ts-foot">ts · —</span>
+      </div>
+
+      <div class="cipher" aria-hidden="true">◌ ◌ ◌</div>
     </div>
+
+    <script>
+      (function () {
+        var params = new URLSearchParams(window.location.search);
+        var token = params.get('token');
+        var display = document.getElementById('token-display');
+        var detail = document.getElementById('token-detail');
+        var block = document.getElementById('token-block');
+        var tsFoot = document.getElementById('ts-foot');
+
+        function mask(value) {
+          if (!value || value.length < 8) return value || '— · null payload';
+          return value.slice(0, 4) + '·' + '··'.repeat(3) + '·' + value.slice(-4);
+        }
+
+        if (token) {
+          display.textContent = mask(token);
+          display.classList.remove('missing');
+          detail.textContent = 'length · ' + token.length + ' · checksum withheld';
+          block.classList.remove('empty');
+        } else {
+          display.textContent = '— · null payload';
+          display.classList.add('missing');
+          detail.textContent = 'no fragment in query · channel empty';
+          block.classList.add('empty');
+        }
+
+        var now = new Date();
+        var pad = function (n) {
+          return n < 10 ? '0' + n : String(n);
+        };
+        tsFoot.textContent =
+          'ts · ' +
+          pad(now.getUTCHours()) +
+          ':' +
+          pad(now.getUTCMinutes()) +
+          'z';
+      })();
+    </script>
   </body>
 </html>
