@@ -4,7 +4,7 @@
     "target": {
       "namespace": "android_app",
       "package_name": "com.safeshelf.app",
-      "sha256_cert_fingerprints": ["YOUR_SHA256_FINGERPRINT"]
+      "sha256_cert_fingerprints": ["8B:F5:5E:4E:01:8F:25:88:2E:DD:F7:BD:4C:2A:06:CD:82:43:11:BC:A9:D7:7F:35:8D:7B:48:19:E0:CE:70:A3"]
     }
   }
 ]

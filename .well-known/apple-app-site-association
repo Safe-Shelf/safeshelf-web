@@ -3,7 +3,7 @@
     "apps": [],
     "details": [
       {
-        "appID": "YOUR_APPLE_TEAM_ID.com.safeshelf.app",
+        "appID": "FC83X544J5.com.safeshelf.app",
         "paths": ["/auth/verify", "/auth/*"]
       }
     ]
