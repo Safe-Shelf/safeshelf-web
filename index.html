@@ -3,59 +3,164 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>SafeShelf</title>
-    <meta
-      name="description"
-      content="SafeShelf — personal product safety monitor. Open magic links on your phone with the app installed."
-    />
+    <title>∅</title>
+    <meta name="robots" content="noindex, nofollow" />
     <style>
+      @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400&display=swap');
+
       :root {
-        color-scheme: light dark;
-        --forest: #1d5d50;
-        --cream: #faf4e8;
-        --ink: #1d1c14;
+        --void: #070809;
+        --panel: #0e1114;
+        --line: #1a2128;
+        --ghost: #3d4a56;
+        --pulse: #5a7a6e;
+        --flicker: #8fa89c;
       }
+
       * {
         box-sizing: border-box;
       }
+
+      html,
       body {
         margin: 0;
         min-height: 100vh;
+        background: var(--void);
+        color: var(--ghost);
+        font-family: 'IBM Plex Mono', ui-monospace, monospace;
+        font-weight: 300;
+        font-size: 13px;
+        letter-spacing: 0.04em;
+      }
+
+      body {
         display: grid;
         place-items: center;
-        font-family: system-ui, -apple-system, sans-serif;
-        background: var(--cream);
-        color: var(--ink);
-        padding: 24px;
+        padding: 2rem;
+        background-image:
+          radial-gradient(ellipse 80% 50% at 50% -20%, rgba(90, 122, 110, 0.08), transparent),
+          repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 2px,
+            rgba(255, 255, 255, 0.012) 2px,
+            rgba(255, 255, 255, 0.012) 3px
+          );
       }
-      main {
-        max-width: 420px;
-        text-align: center;
+
+      .frame {
+        width: min(420px, 100%);
+        border: 1px solid var(--line);
+        background: var(--panel);
+        padding: 2rem 1.75rem;
+        position: relative;
+        overflow: hidden;
       }
-      h1 {
-        font-size: 1.75rem;
-        margin: 0 0 12px;
-        color: var(--forest);
+
+      .frame::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          105deg,
+          transparent 40%,
+          rgba(143, 168, 156, 0.03) 50%,
+          transparent 60%
+        );
+        pointer-events: none;
+        animation: sweep 12s ease-in-out infinite;
       }
-      p {
-        line-height: 1.5;
-        margin: 0 0 16px;
-        opacity: 0.85;
+
+      @keyframes sweep {
+        0%,
+        100% {
+          transform: translateX(-100%);
+        }
+        50% {
+          transform: translateX(100%);
+        }
+      }
+
+      .sigil {
+        font-size: 10px;
+        color: var(--pulse);
+        opacity: 0.6;
+        margin-bottom: 1.5rem;
+        user-select: none;
+      }
+
+      .block {
+        margin: 0 0 1.25rem;
+        line-height: 1.7;
+        word-break: break-all;
+      }
+
+      .block.muted {
+        color: var(--ghost);
+        opacity: 0.45;
+        font-size: 11px;
+      }
+
+      .row {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0.5rem 0;
+        border-top: 1px solid var(--line);
+        margin-top: 1.5rem;
+        font-size: 10px;
+        opacity: 0.35;
+      }
+
+      .tick {
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--pulse);
+        margin-right: 0.5rem;
+        animation: blink 4s step-end infinite;
+      }
+
+      @keyframes blink {
+        0%,
+        92% {
+          opacity: 0.2;
+        }
+        93%,
+        100% {
+          opacity: 0.9;
+        }
+      }
+
+      .cipher {
+        color: var(--flicker);
+        opacity: 0.25;
+        font-size: 10px;
+        margin-top: 1.75rem;
+        text-align: right;
       }
     </style>
   </head>
   <body>
-    <main>
-      <h1>SafeShelf</h1>
-      <p>
-        This page supports magic-link sign-in for the SafeShelf mobile app. If you
-        received a sign-in email, open the link on your phone with SafeShelf
-        installed.
+    <div class="frame">
+      <div class="sigil"><span class="tick"></span>node / dormant</div>
+
+      <p class="block">
+        7f3a·c91e·004b<br />
+        channel sealed · ingress null
       </p>
-      <p>
-        Looking for the app? Download SafeShelf from the App Store or Google Play
-        when available.
+
+      <p class="block muted">
+        eJw9Ki4uLi4uKi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4u
       </p>
-    </main>
+
+      <div class="row">
+        <span>lat · withheld</span>
+        <span>seq · —</span>
+      </div>
+
+      <div class="cipher">∅∅∅</div>
+    </div>
   </body>
 </html>
