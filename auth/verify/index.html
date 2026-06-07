@@ -141,6 +141,42 @@
         z-index: 1;
       }
 
+      .opening-state {
+        text-align: center;
+        padding: 1.5rem 0 0.5rem;
+      }
+
+      .opening-state.hidden {
+        display: none;
+      }
+
+      .opening-spinner {
+        width: 32px;
+        height: 32px;
+        margin: 0 auto 1rem;
+        border: 2px solid var(--line);
+        border-top-color: var(--forest-bright);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .opening-text {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 500;
+        color: var(--cream);
+      }
+
+      .main-content.hidden {
+        display: none;
+      }
+
       h1 {
         margin: 0 0 0.75rem;
         font-size: clamp(1.375rem, 4.5vw, 1.625rem);
@@ -171,6 +207,59 @@
       .steps-hint strong {
         color: var(--cream-muted);
         font-weight: 500;
+      }
+
+      .open-app-section {
+        margin-bottom: 1.75rem;
+      }
+
+      .open-app-section.hidden {
+        display: none;
+      }
+
+      .open-app-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        width: 100%;
+        min-height: 52px;
+        padding: 0.875rem 1.25rem;
+        border: none;
+        border-radius: 10px;
+        background: linear-gradient(145deg, var(--forest-bright), var(--forest));
+        color: var(--cream);
+        font-family: inherit;
+        font-size: 1rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        text-decoration: none;
+        cursor: pointer;
+        box-shadow:
+          0 4px 16px rgba(29, 93, 80, 0.4),
+          0 0 0 1px rgba(242, 235, 224, 0.08) inset;
+        transition:
+          transform 0.15s ease,
+          box-shadow 0.2s ease;
+      }
+
+      .open-app-btn:hover,
+      .open-app-btn:focus-visible {
+        transform: translateY(-1px);
+        box-shadow:
+          0 6px 20px rgba(29, 93, 80, 0.5),
+          0 0 0 1px rgba(242, 235, 224, 0.12) inset;
+        outline: none;
+      }
+
+      .open-app-btn:active {
+        transform: translateY(0);
+      }
+
+      .open-app-btn svg {
+        flex-shrink: 0;
+        width: 20px;
+        height: 20px;
       }
 
       .store-section {
@@ -374,72 +463,94 @@
       </header>
 
       <div class="content">
-        <h1>Install the app to finish signing in</h1>
-        <p class="lede">
-          This sign-in link opens in SafeShelf on your phone. Download the app below, then open this
-          same link again to complete verification.
-        </p>
+        <div class="opening-state hidden" id="opening-state" aria-live="polite">
+          <div class="opening-spinner" aria-hidden="true"></div>
+          <p class="opening-text">Opening app…</p>
+        </div>
 
-        <p class="steps-hint">
-          <strong>Already installed?</strong> Open this page on your phone, or request a fresh sign-in
-          link from the SafeShelf app.
-        </p>
+        <div class="main-content" id="main-content">
+          <h1>Finish signing in with SafeShelf</h1>
+          <p class="lede">
+            If you have the app installed, tap <strong>Open in SafeShelf app</strong> below — or tap
+            the link directly from your email (not by pasting into Safari).
+          </p>
 
-        <section class="store-section" aria-label="Download SafeShelf">
-          <p class="store-label">Get the app</p>
-          <div class="store-grid">
-            <!-- Store URLs pending — replace href="#" with live App Store URL when iOS app ships -->
-            <a
-              class="store-btn"
-              href="#"
-              data-store="pending"
-              aria-label="Download SafeShelf on the App Store (coming soon)"
-            >
-              <span class="store-icon">
-                <img
-                  src="/assets/icons/apple.svg"
-                  alt="Apple logo"
-                  width="28"
-                  height="28"
-                  decoding="async"
+          <p class="steps-hint">
+            <strong>Pasting in Safari?</strong> You may see this page first. Tap the button below to
+            open the app, or request a fresh sign-in link and open it from Mail or Messages.
+          </p>
+
+          <section class="open-app-section hidden" id="open-app-section" aria-label="Open in app">
+            <a class="open-app-btn" id="open-app-btn" href="#">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path
+                  d="M14 3h7v7M10 14 21 3M5 10v11h11"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
                 />
-              </span>
-              <span class="store-copy">
-                <span class="store-kicker">Download on the</span>
-                <span class="store-name">App Store</span>
-              </span>
-              <span class="store-badge">Soon</span>
+              </svg>
+              Open in SafeShelf app
             </a>
+          </section>
 
-            <!-- Store URLs pending — replace href="#" with live Google Play URL when Android app ships -->
-            <a
-              class="store-btn"
-              href="#"
-              data-store="pending"
-              aria-label="Get SafeShelf on Google Play (coming soon)"
-            >
-              <span class="store-icon">
-                <img
-                  src="/assets/icons/google-play.svg"
-                  alt="Google Play logo"
-                  width="28"
-                  height="28"
-                  decoding="async"
-                />
-              </span>
-              <span class="store-copy">
-                <span class="store-kicker">Get it on</span>
-                <span class="store-name">Google Play</span>
-              </span>
-              <span class="store-badge">Soon</span>
-            </a>
-          </div>
-        </section>
+          <section class="store-section" aria-label="Download SafeShelf">
+            <p class="store-label">Don't have the app yet?</p>
+            <div class="store-grid">
+              <!-- Store URLs pending — replace href="#" with live App Store URL when iOS app ships -->
+              <a
+                class="store-btn"
+                href="#"
+                data-store="pending"
+                aria-label="Download SafeShelf on the App Store (coming soon)"
+              >
+                <span class="store-icon">
+                  <img
+                    src="/assets/icons/apple.svg"
+                    alt="Apple logo"
+                    width="28"
+                    height="28"
+                    decoding="async"
+                  />
+                </span>
+                <span class="store-copy">
+                  <span class="store-kicker">Download on the</span>
+                  <span class="store-name">App Store</span>
+                </span>
+                <span class="store-badge">Soon</span>
+              </a>
 
-        <aside class="token-panel hidden" id="token-panel" aria-live="polite">
-          <p class="token-label">Sign-in link detected</p>
-          <p class="token-value" id="token-display"></p>
-        </aside>
+              <!-- Store URLs pending — replace href="#" with live Google Play URL when Android app ships -->
+              <a
+                class="store-btn"
+                href="#"
+                data-store="pending"
+                aria-label="Get SafeShelf on Google Play (coming soon)"
+              >
+                <span class="store-icon">
+                  <img
+                    src="/assets/icons/google-play.svg"
+                    alt="Google Play logo"
+                    width="28"
+                    height="28"
+                    decoding="async"
+                  />
+                </span>
+                <span class="store-copy">
+                  <span class="store-kicker">Get it on</span>
+                  <span class="store-name">Google Play</span>
+                </span>
+                <span class="store-badge">Soon</span>
+              </a>
+            </div>
+          </section>
+
+          <aside class="token-panel hidden" id="token-panel" aria-live="polite">
+            <p class="token-label">Sign-in link detected</p>
+            <p class="token-value" id="token-display"></p>
+          </aside>
+        </div>
       </div>
 
       <footer class="footer">safeshelf.app · sign-in verification</footer>
@@ -449,20 +560,81 @@
       (function () {
         var params = new URLSearchParams(window.location.search);
         var token = params.get('token');
+        var barcode = params.get('barcode');
         var panel = document.getElementById('token-panel');
         var display = document.getElementById('token-display');
+        var openAppSection = document.getElementById('open-app-section');
+        var openAppBtn = document.getElementById('open-app-btn');
+        var openingState = document.getElementById('opening-state');
+        var mainContent = document.getElementById('main-content');
 
         function mask(value) {
           if (!value) return '';
           if (value.length < 10) {
             return value.slice(0, 2) + '···' + value.slice(-2);
           }
-          return value.slice(0, 4) + '···' + '·'.repeat(Math.min(8, value.length - 8)) + '···' + value.slice(-4);
+          return (
+            value.slice(0, 4) +
+            '···' +
+            '·'.repeat(Math.min(8, value.length - 8)) +
+            '···' +
+            value.slice(-4)
+          );
         }
+
+        function isMobile() {
+          return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        }
+
+        function buildAppUrl() {
+          if (!token) return null;
+          var url = 'safeshelf://auth/verify?token=' + encodeURIComponent(token);
+          if (barcode) {
+            url += '&barcode=' + encodeURIComponent(barcode);
+          }
+          return url;
+        }
+
+        function openInApp(appUrl) {
+          var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+          if (isIOS) {
+            var iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = appUrl;
+            document.body.appendChild(iframe);
+            setTimeout(function () {
+              document.body.removeChild(iframe);
+            }, 2000);
+          }
+
+          window.location.href = appUrl;
+        }
+
+        function revealMainContent() {
+          openingState.classList.add('hidden');
+          mainContent.classList.remove('hidden');
+        }
+
+        var appUrl = buildAppUrl();
 
         if (token) {
           display.textContent = mask(token);
           panel.classList.remove('hidden');
+          openAppSection.classList.remove('hidden');
+          openAppBtn.href = appUrl;
+
+          openAppBtn.addEventListener('click', function (event) {
+            event.preventDefault();
+            openInApp(appUrl);
+          });
+
+          if (isMobile()) {
+            openingState.classList.remove('hidden');
+            mainContent.classList.add('hidden');
+            openInApp(appUrl);
+            setTimeout(revealMainContent, 2000);
+          }
         }
 
         document.querySelectorAll('[data-store="pending"]').forEach(function (link) {
