@@ -12,6 +12,9 @@ Hosted on **GitHub Pages** from this repository.
 | `.well-known/assetlinks.json` | Android App Links |
 | `CNAME` | Custom domain for GitHub Pages |
 | `auth/verify/index.html` | Browser fallback when the app is not installed |
+| `terms/index.html` | Terms of Service (`https://safeshelf.app/terms`) |
+| `privacy/index.html` | Privacy Policy (`https://safeshelf.app/privacy`) |
+| `assets/legal.css` | Shared styles for legal pages |
 
 ## App identifiers
 
@@ -87,6 +90,14 @@ curl -s https://safeshelf.app/.well-known/assetlinks.json | jq .
 
 # Fallback page
 curl -sI https://safeshelf.app/auth/verify/
+
+# Legal pages
+curl -sI https://safeshelf.app/terms/
+
+curl -sI https://safeshelf.app/privacy/
+
+# Verify terms_version meta tag
+curl -s https://safeshelf.app/terms/ | grep 'safeshelf:terms-version'
 ```
 
 Apple: [AASA Validator](https://search.developer.apple.com/appsearch-validation-tool/)  
